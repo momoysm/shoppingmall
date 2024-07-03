@@ -3,7 +3,6 @@ package com.sparta.shoppingmall.domain.comment.dto;
 import com.sparta.shoppingmall.domain.comment.entity.Comment;
 import lombok.Builder;
 import lombok.Getter;
-import org.springframework.data.domain.Page;
 
 import java.time.LocalDateTime;
 

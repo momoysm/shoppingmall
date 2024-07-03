@@ -5,7 +5,6 @@ import com.sparta.shoppingmall.common.exception.customexception.PasswordMismatch
 import com.sparta.shoppingmall.common.exception.customexception.UserDuplicatedException;
 import com.sparta.shoppingmall.common.exception.customexception.UserMismatchException;
 import com.sparta.shoppingmall.common.jwt.RefreshTokenService;
-import com.sparta.shoppingmall.domain.like.entity.ContentType;
 import com.sparta.shoppingmall.domain.like.repository.LikesRepository;
 import com.sparta.shoppingmall.domain.user.dto.*;
 import com.sparta.shoppingmall.domain.user.entity.User;
