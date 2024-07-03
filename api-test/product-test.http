@@ -36,6 +36,12 @@ GET http://localhost:8080/api/products?pageNum=1&isDesc=true
 GET http://localhost:8080/api/products/2
 
 
+### 팔로우한 유저의 상품 조회
+GET http://localhost:8080/api/products/following?pageNum=1&isDesc=true
+Authorization: {{Authorization}}
+Content-Type: application/json
+
+
 ### 본인 상품 수정 -> ok
 PATCH http://localhost:8080/api/products/3
 Authorization: {{Authorization}}

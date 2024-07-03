@@ -43,7 +43,7 @@ public class LikesRepositoryCustomImpl implements LikesRepositoryCustom{
                 .select(likes.count())
                 .from(likes)
                 .where(likes.user.id.eq(userId), likes.contentType.eq(ContentType.PRODUCT))
-                .fetch().get(0);
+                .fetchOne();
 
         return PageableExecutionUtils.getPage(productList, pageable, () -> total);
     }

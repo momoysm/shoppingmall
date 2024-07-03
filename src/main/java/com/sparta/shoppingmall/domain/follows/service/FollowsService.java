@@ -51,7 +51,6 @@ public class FollowsService {
      */
     @Transactional
     public FollowsResponse followCancel(Long followingId, User follower) {
-        // 검증 -> 팔로우 검색 -> 팔로우 삭제
         if(followingId.equals(follower.getId())){
             throw new FollowRejectedException("자신을 팔로우 취소할 수 없습니다.");
         }

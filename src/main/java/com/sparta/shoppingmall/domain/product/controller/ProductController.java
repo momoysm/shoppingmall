@@ -59,6 +59,19 @@ public class ProductController {
         return getResponseEntity(response, "상품 조회 성공");
     }
 
+    /**
+     * 팔로우한 유저의 상품 조회
+     */
+    @GetMapping("/following")
+    public ResponseEntity<CommonResponse<ProductPageResponse>> getProductsFollow(
+            @RequestParam(value = "pageNum", required = false, defaultValue = "1") Integer pageNum,
+            @RequestParam(value = "isDesc", required = false, defaultValue = "true") Boolean isDesc,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ){
+        ProductPageResponse response = productService.getProductFollow(pageNum, isDesc, userDetails.getUser());
+        return getResponseEntity(response, "팔로우한 유저의 상품 조회 성공");
+    }
+
 
     /**
      * 상품수정 api/products/{productId}
