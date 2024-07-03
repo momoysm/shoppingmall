@@ -1,11 +1,13 @@
 package com.sparta.shoppingmall.domain.comment.dto;
 
 import com.sparta.shoppingmall.domain.comment.entity.Comment;
+import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
 
 @Getter
+@Builder
 public class CommentResponse {
 
     private final Long id;
@@ -18,12 +20,14 @@ public class CommentResponse {
 
     private final LocalDateTime updatedAt;
 
-    public CommentResponse(Comment comment) {
-        this.id = comment.getId();
-        this.content = comment.getContent();
-        this.likeCount = comment.getLikeCount();
-        this.createdAt = comment.getCreateAt();
-        this.updatedAt = comment.getUpdateAt();
+    public static CommentResponse of(Comment comment) {
+        return CommentResponse.builder()
+                .id(comment.getId())
+                .content(comment.getContent())
+                .likeCount(comment.getLikeCount())
+                .createdAt(comment.getCreateAt())
+                .updatedAt(comment.getUpdateAt())
+                .build();
     }
 
 }

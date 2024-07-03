@@ -2,20 +2,21 @@ package com.sparta.shoppingmall.domain.like.controller;
 
 import com.sparta.shoppingmall.common.base.dto.CommonResponse;
 import com.sparta.shoppingmall.common.exception.customexception.LikeMismatchException;
+import com.sparta.shoppingmall.common.security.UserDetailsImpl;
+import com.sparta.shoppingmall.domain.comment.dto.CommentPageResponse;
+import com.sparta.shoppingmall.domain.like.dto.LikesRequest;
 import com.sparta.shoppingmall.domain.like.dto.LikesResponse;
 import com.sparta.shoppingmall.domain.like.service.LikesService;
-import com.sparta.shoppingmall.domain.like.dto.LikesRequest;
-import com.sparta.shoppingmall.common.security.UserDetailsImpl;
+import com.sparta.shoppingmall.domain.product.dto.ProductPageResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Objects;
 
-import static com.sparta.shoppingmall.common.util.ControllerUtil.*;
+import static com.sparta.shoppingmall.common.util.ControllerUtil.getResponseEntity;
 
 @RestController
 @RequiredArgsConstructor
@@ -52,6 +53,32 @@ public class LikesController {
 
         LikesResponse response = likesService.toggleLike(request, userDetails.getUser());
         return getResponseEntity(response, "댓글 좋아요 토글 성공");
+    }
+
+    /**
+     * 내가 좋아요 한 상품들 보기
+     */
+    @GetMapping("/products/like")
+    public ResponseEntity<CommonResponse<ProductPageResponse>> getProductLikedList(
+            @RequestParam(value = "pageNum", required = false, defaultValue = "1") final Integer pageNum,
+            @RequestParam(value = "isDesc", required = false, defaultValue = "true") final Boolean isDesc,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        ProductPageResponse response = likesService.getProductLikedList(pageNum, isDesc, userDetails.getUser());
+        return getResponseEntity(response, "좋아요한 상품 조회 성공");
+    }
+
+    /**
+     * 내가 좋아요 한 댓글 보기
+     */
+    @GetMapping("/comments/like")
+    public ResponseEntity<CommonResponse<CommentPageResponse>> getCommentLikedList(
+            @RequestParam(value = "pageNum", required = false, defaultValue = "1") final Integer pageNum,
+            @RequestParam(value = "isDesc", required = false, defaultValue = "true") final Boolean isDesc,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        CommentPageResponse response = likesService.getCommentLikesList(pageNum, isDesc, userDetails.getUser());
+        return getResponseEntity(response, "좋아요한 댓글 조회 성공");
     }
 
     /**

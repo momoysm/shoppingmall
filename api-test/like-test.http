@@ -1,11 +1,11 @@
 ### 상품 좋아요 토글
-POST http://localhost:8080/api/products/2/like
+POST http://localhost:8080/api/products/3/like
 Authorization: {{Authorization}}
 Content-Type: application/json
 
 {
   "contentType": "PRODUCT",
-  "contentId": 2
+  "contentId": 3
 }
 
 
@@ -18,3 +18,13 @@ Content-Type: application/json
   "contentType": "COMMENT",
   "contentId": 2
 }
+
+### 내가 좋아요한 상품 조회 (페이징)
+GET http://localhost:8080/api/products/like?pageNum=1&isDesc=true
+Authorization: {{Authorization}}
+Content-Type: application/json
+
+### 내가 좋아요한 댓글 조회 (페이징)
+GET http://localhost:8080/api/comments/like?pageNum=1&isDesc=true
+Authorization: {{Authorization}}
+Content-Type: application/json
