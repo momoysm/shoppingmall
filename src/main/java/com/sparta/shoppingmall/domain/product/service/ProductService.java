@@ -3,6 +3,7 @@ package com.sparta.shoppingmall.domain.product.service;
 import com.sparta.shoppingmall.common.exception.customexception.ProductNotFoundException;
 import com.sparta.shoppingmall.common.exception.customexception.UserMismatchException;
 import com.sparta.shoppingmall.common.util.PageUtil;
+import com.sparta.shoppingmall.domain.product.dto.ProductPageResponse;
 import com.sparta.shoppingmall.domain.product.dto.ProductRequest;
 import com.sparta.shoppingmall.domain.product.dto.ProductResponse;
 import com.sparta.shoppingmall.domain.product.entity.Product;
@@ -48,7 +49,7 @@ public class ProductService {
      * 상품조회(전체) get api/products -> 5개씩 / 정렬 = 최신순, 추천, 판매중 상품
      */
     @Transactional(readOnly = true)
-    public List<ProductResponse> getProducts(final Integer pageNum, final Boolean isDesc) {
+    public ProductPageResponse getProducts(final Integer pageNum, final Boolean isDesc) {
         Pageable pageable = PageUtil.createPageable(pageNum, PageUtil.PAGE_SIZE_FIVE, isDesc);
 
         List<ProductStatus> statuses = new ArrayList<>();
@@ -58,14 +59,7 @@ public class ProductService {
         Page<Product> products = productRepository.findAllByStatusIn(pageable, statuses);
         String totalProduct = PageUtil.validateAndSummarizePage(pageNum, products);
 
-        List<ProductResponse> productResponses = new ArrayList<>();
-
-        for (Product product : products) {
-            ProductResponse productResponse = ProductResponse.of(product);
-            productResponses.add(productResponse);
-        }
-
-        return productResponses;
+        return ProductPageResponse.of(pageNum, totalProduct, products);
     }
 
 

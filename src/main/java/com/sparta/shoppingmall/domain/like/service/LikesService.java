@@ -1,18 +1,31 @@
 package com.sparta.shoppingmall.domain.like.service;
 
+import com.sparta.shoppingmall.common.exception.customexception.UserMismatchException;
+import com.sparta.shoppingmall.common.util.PageUtil;
+import com.sparta.shoppingmall.domain.comment.dto.CommentPageResponse;
+import com.sparta.shoppingmall.domain.comment.dto.CommentResponse;
+import com.sparta.shoppingmall.domain.comment.entity.Comment;
 import com.sparta.shoppingmall.domain.comment.service.CommentService;
 import com.sparta.shoppingmall.domain.like.dto.LikesResponse;
+import com.sparta.shoppingmall.domain.like.entity.ContentType;
 import com.sparta.shoppingmall.domain.like.entity.LikeStatus;
 import com.sparta.shoppingmall.domain.like.entity.Likes;
 import com.sparta.shoppingmall.domain.like.repository.LikesRepository;
 import com.sparta.shoppingmall.domain.like.dto.LikesRequest;
+import com.sparta.shoppingmall.domain.like.repository.LikesRepositoryImpl;
+import com.sparta.shoppingmall.domain.product.dto.ProductPageResponse;
+import com.sparta.shoppingmall.domain.product.dto.ProductResponse;
+import com.sparta.shoppingmall.domain.product.entity.Product;
 import com.sparta.shoppingmall.domain.product.service.ProductService;
 import com.sparta.shoppingmall.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -29,7 +42,20 @@ public class LikesService {
      */
     @Transactional
     public LikesResponse toggleLike(LikesRequest request, User user) {
-        Optional<Likes> existLike = likesRepository.findByContentTypeAndContentId(request.getContentType(), request.getContentId());
+        //자신의 게시물 또는 댓글인지 확인
+        if(ContentType.PRODUCT.equals(request.getContentType())) {
+            Product product = productService.findByProductId(request.getContentId());
+            if(user.equals(product.getUser())){
+                throw new UserMismatchException("자신의 게시물에 좋아요를 누를 수 없습니다.");
+            }
+        }else if(ContentType.COMMENT.equals(request.getContentType())) {
+            Comment comment = commentService.getComment(request.getContentId());
+            if(user.equals(comment.getUser())){
+                throw new UserMismatchException("자신의 댓글에 좋아요를 누를 수 없습니다.");
+            }
+        }
+
+        Optional<Likes> existLike = likesRepository.findByUserIdAndContentTypeAndContentId(user.getId(), request.getContentType(), request.getContentId());
 
         Likes likes = existLike.orElseGet(() -> createLikes(request, user));
 
@@ -39,7 +65,7 @@ public class LikesService {
             cancelLike(likes, user.getId());
         }
 
-        return new LikesResponse(likes);
+        return LikesResponse.of(likes);
 
     }
 
@@ -77,5 +103,28 @@ public class LikesService {
             case PRODUCT -> productService.findByProductId(contentId).decreaseLikeCount();
             case COMMENT -> commentService.getComment(contentId).decreaseLikeCount();
         }
+    }
+
+    /**
+     * 내가 좋아요 한 상품들 보기
+     */
+    @Transactional(readOnly = true)
+    public ProductPageResponse getProductLikedList(Integer pageNum, Boolean isDesc, User user) {
+        Pageable pageable = PageUtil.createPageable(pageNum, PageUtil.PAGE_SIZE_FIVE, isDesc);
+        Page<Product> productList = likesRepository.productLiked(user.getId(), pageable);
+        String totalProduct = PageUtil.validateAndSummarizePage(pageNum, productList);
+
+        return ProductPageResponse.of(pageNum, totalProduct, productList);
+    }
+
+    /**
+     * 내가 좋아요한 댓글 보기
+     */
+    public CommentPageResponse getCommentLikesList(Integer pageNum, Boolean isDesc, User user) {
+        Pageable pageable = PageUtil.createPageable(pageNum, PageUtil.PAGE_SIZE_FIVE, isDesc);
+        Page<Comment> commentList = likesRepository.commentLiked(user.getId(), pageable);
+        String totalComment = PageUtil.validateAndSummarizePage(pageNum, commentList);
+
+        return CommentPageResponse.of(pageNum, totalComment, commentList);
     }
 }

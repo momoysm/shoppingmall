@@ -6,7 +6,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
-public class PageUtil {
+public final class PageUtil {
+
+    private PageUtil() {
+    }
 
     public static final Integer PAGE_SIZE_FIVE = 5;
     public static final String NO_ELEMENT_MESSAGE = "조회된 데이터가 없습니다.";

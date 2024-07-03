@@ -33,7 +33,7 @@ public class CommentService {
 
         commentRepository.save(comment);
 
-        return new CommentResponse(comment);
+        return CommentResponse.of(comment);
     }
 
     /**
@@ -46,7 +46,7 @@ public class CommentService {
 
         List<CommentResponse> response = new ArrayList<>();
         for(Comment comment : comments) {
-            response.add(new CommentResponse(comment));
+            response.add(CommentResponse.of(comment));
         }
 
         return response;
@@ -65,7 +65,7 @@ public class CommentService {
         comment.verifyCommentProduct(productId);
         comment.updateComment(request);
 
-        return new CommentResponse(comment);
+        return CommentResponse.of(comment);
     }
 
     /**

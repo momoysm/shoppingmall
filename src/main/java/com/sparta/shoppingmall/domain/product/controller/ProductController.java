@@ -2,6 +2,7 @@ package com.sparta.shoppingmall.domain.product.controller;
 
 import com.sparta.shoppingmall.common.base.dto.CommonResponse;
 import com.sparta.shoppingmall.common.security.UserDetailsImpl;
+import com.sparta.shoppingmall.domain.product.dto.ProductPageResponse;
 import com.sparta.shoppingmall.domain.product.dto.ProductRequest;
 import com.sparta.shoppingmall.domain.product.dto.ProductResponse;
 import com.sparta.shoppingmall.domain.product.service.ProductService;
@@ -42,7 +43,7 @@ public class ProductController {
             @RequestParam(value = "pageNum", required = false, defaultValue = "1") final Integer pageNum,
             @RequestParam(value = "isDesc", required = false, defaultValue = "true") final Boolean isDesc
     ) {
-        List<ProductResponse> response = productService.getProducts(pageNum, isDesc);
+        ProductPageResponse response = productService.getProducts(pageNum, isDesc);
         return getResponseEntity(response, "상품 목록 조회 성공");
     }
 
