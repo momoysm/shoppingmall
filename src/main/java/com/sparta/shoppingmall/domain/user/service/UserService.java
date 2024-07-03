@@ -5,6 +5,8 @@ import com.sparta.shoppingmall.common.exception.customexception.PasswordMismatch
 import com.sparta.shoppingmall.common.exception.customexception.UserDuplicatedException;
 import com.sparta.shoppingmall.common.exception.customexception.UserMismatchException;
 import com.sparta.shoppingmall.common.jwt.RefreshTokenService;
+import com.sparta.shoppingmall.domain.like.entity.ContentType;
+import com.sparta.shoppingmall.domain.like.repository.LikesRepository;
 import com.sparta.shoppingmall.domain.user.dto.*;
 import com.sparta.shoppingmall.domain.user.entity.User;
 import com.sparta.shoppingmall.domain.user.entity.UserStatus;
@@ -27,6 +29,7 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final LikesRepository likesRepository;
     private final PasswordEncoder passwordEncoder;
     private final RefreshTokenService refreshTokenService;
 
@@ -101,7 +104,7 @@ public class UserService {
         if(!Objects.equals(user.getId(), userId)) {
             throw new UserMismatchException("사용자가 일치하지 않습니다.");
         }
-        return new ProfileResponse(user);
+        return likesRepository.getUserLikedProductComment(user);
     }
 
 

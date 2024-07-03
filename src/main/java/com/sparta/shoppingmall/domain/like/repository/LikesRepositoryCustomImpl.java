@@ -1,5 +1,6 @@
 package com.sparta.shoppingmall.domain.like.repository;
 
+import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sparta.shoppingmall.domain.comment.entity.Comment;
 import com.sparta.shoppingmall.domain.comment.entity.QComment;
@@ -7,6 +8,8 @@ import com.sparta.shoppingmall.domain.like.entity.ContentType;
 import com.sparta.shoppingmall.domain.like.entity.QLikes;
 import com.sparta.shoppingmall.domain.product.entity.Product;
 import com.sparta.shoppingmall.domain.product.entity.QProduct;
+import com.sparta.shoppingmall.domain.user.dto.ProfileResponse;
+import com.sparta.shoppingmall.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,10 +17,12 @@ import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Repository
 @RequiredArgsConstructor
-public class LikesRepositoryImpl implements LikesRepositoryCustom{
+public class LikesRepositoryCustomImpl implements LikesRepositoryCustom{
 
     private final JPAQueryFactory jpaQueryFactory;
 
@@ -65,17 +70,25 @@ public class LikesRepositoryImpl implements LikesRepositoryCustom{
         return PageableExecutionUtils.getPage(commentList, pageable, () -> total);
     }
 
-//    private List<OrderSpecifier> getOrderSpecifier(Sort sort) {
-//        List<OrderSpecifier> orders = new ArrayList<>();
-//
-//        sort.stream().forEach(order -> {
-//            Order direction = order.isAscending() ? Order.ASC : Order.DESC;
-//            String prop = order.getProperty();
-//            PathBuilder orderByExpression = new PathBuilder(Product.class, "product");
-//            orders.add(new OrderSpecifier(direction, orderByExpression.get(prop)));
-//        });
-//
-//        return orders;
-//    }
+    @Override
+    public ProfileResponse getUserLikedProductComment(User loginUser) {
+        QLikes likes = QLikes.likes;
+
+        List<Tuple> result = jpaQueryFactory
+                .select(
+                        likes.contentType,
+                        likes.count()
+                )
+                .from(likes)
+                .where(likes.user.id.eq(loginUser.getId()))
+                .groupBy(likes.contentType)
+                .fetch();
+
+        Map<ContentType, Long> test = result.stream()
+                .collect(Collectors.toMap(tuple -> tuple.get(likes.contentType)
+                        , tuple -> tuple.get(likes.count())));
+
+        return ProfileResponse.of(loginUser, test);
+    }
 
 }

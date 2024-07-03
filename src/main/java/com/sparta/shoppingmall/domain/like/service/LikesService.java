@@ -3,7 +3,6 @@ package com.sparta.shoppingmall.domain.like.service;
 import com.sparta.shoppingmall.common.exception.customexception.UserMismatchException;
 import com.sparta.shoppingmall.common.util.PageUtil;
 import com.sparta.shoppingmall.domain.comment.dto.CommentPageResponse;
-import com.sparta.shoppingmall.domain.comment.dto.CommentResponse;
 import com.sparta.shoppingmall.domain.comment.entity.Comment;
 import com.sparta.shoppingmall.domain.comment.service.CommentService;
 import com.sparta.shoppingmall.domain.like.dto.LikesResponse;
@@ -12,9 +11,7 @@ import com.sparta.shoppingmall.domain.like.entity.LikeStatus;
 import com.sparta.shoppingmall.domain.like.entity.Likes;
 import com.sparta.shoppingmall.domain.like.repository.LikesRepository;
 import com.sparta.shoppingmall.domain.like.dto.LikesRequest;
-import com.sparta.shoppingmall.domain.like.repository.LikesRepositoryImpl;
 import com.sparta.shoppingmall.domain.product.dto.ProductPageResponse;
-import com.sparta.shoppingmall.domain.product.dto.ProductResponse;
 import com.sparta.shoppingmall.domain.product.entity.Product;
 import com.sparta.shoppingmall.domain.product.service.ProductService;
 import com.sparta.shoppingmall.domain.user.entity.User;
@@ -25,7 +22,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 
 @Slf4j
