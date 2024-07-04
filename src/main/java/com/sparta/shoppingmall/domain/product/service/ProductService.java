@@ -6,22 +6,24 @@ import com.sparta.shoppingmall.common.util.PageUtil;
 import com.sparta.shoppingmall.domain.product.dto.ProductPageResponse;
 import com.sparta.shoppingmall.domain.product.dto.ProductRequest;
 import com.sparta.shoppingmall.domain.product.dto.ProductResponse;
+import com.sparta.shoppingmall.domain.product.dto.ProductSearchCond;
 import com.sparta.shoppingmall.domain.product.entity.Product;
 import com.sparta.shoppingmall.domain.product.entity.ProductStatus;
 import com.sparta.shoppingmall.domain.product.repository.ProductRepository;
 import com.sparta.shoppingmall.domain.user.entity.User;
 import com.sparta.shoppingmall.domain.user.entity.UserType;
 import com.sparta.shoppingmall.domain.user.service.UserService;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -74,14 +76,25 @@ public class ProductService {
     }
 
     /**
+     * 팔로우한 유저의 상품 조회
+     */
+    public ProductPageResponse getProductFollow(ProductSearchCond searchCond, User user) {
+        Pageable pageable = PageRequest.of(searchCond.getPageNum()-1, searchCond.getPageSize(), Sort.by("createAt").descending());
+        Page<Product> products = productRepository.getProductsFollow(pageable, user, searchCond);
+        String totalProduct = PageUtil.validateAndSummarizePage(searchCond.getPageNum(), products);
+
+        return ProductPageResponse.of(searchCond.getPageNum(), totalProduct, products);
+    }
+
+    /**
      * 상품수정 api/products/{productId}
      */
     @Transactional
     public ProductResponse updateProduct(Long productId, ProductRequest productRequest, User user) {
         Product product = findByProductId(productId);
 
-        if(user.getUserType() != UserType.ADMIN){//유저일때가 아니라 관리자가 아닐때 로 적는게 맞음.
-            if(!Objects.equals(user.getId(), product.getUser().getId())){
+        if (user.getUserType() != UserType.ADMIN) {//유저일때가 아니라 관리자가 아닐때 로 적는게 맞음.
+            if (!Objects.equals(user.getId(), product.getUser().getId())) {
                 throw new UserMismatchException("권한이 없는 사용자입니다");
             }
         }
@@ -99,8 +112,8 @@ public class ProductService {
     public Long deleteProduct(Long productId, User user) {
         Product product = findByProductId(productId);
 
-        if(user.getUserType() != UserType.ADMIN){//유저일때가 아니라 관리자가 아닐때 로 적는게 맞음.
-            if(!Objects.equals(user.getId(), product.getUser().getId())){
+        if (user.getUserType() != UserType.ADMIN) {//유저일때가 아니라 관리자가 아닐때 로 적는게 맞음.
+            if (!Objects.equals(user.getId(), product.getUser().getId())) {
                 throw new UserMismatchException("권한이 없는 사용자입니다");
             }
         }

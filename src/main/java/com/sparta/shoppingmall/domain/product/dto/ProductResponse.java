@@ -2,7 +2,6 @@ package com.sparta.shoppingmall.domain.product.dto;
 
 import com.sparta.shoppingmall.domain.product.entity.Product;
 import com.sparta.shoppingmall.domain.product.entity.ProductStatus;
-import com.sparta.shoppingmall.domain.user.entity.User;
 import lombok.Builder;
 import lombok.Getter;
 

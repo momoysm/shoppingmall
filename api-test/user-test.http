@@ -12,6 +12,13 @@
 @email1 = test@gmail.com
 @address1 = 서울
 
+
+@username2 = gildong1
+@password2 = Abcdefg1234!
+@name2 = 홍길동2
+@email2 = test@gmail.com
+@address2 = 서울
+
 @newPassword=Momosfg123@
 
 ###회원가입 -> ok
@@ -38,17 +45,18 @@ Content-Type: application/json
   "address" : "{{address1}}"
 }
 
-###회원가입 -> ok
+###회원가입2 -> 됨
 POST http://localhost:8080/api/users
 Content-Type: application/json
 
 {
-  "username" : "{{username}}",
-  "password" : "{{password}}",
-  "name" : "{{name}}",
-  "email" : "{{email}}",
-  "address" : "{{address}}"
+  "username" : "gildong12",
+  "password" : "{{password2}}",
+  "name" : "{{name2}}",
+  "email" : "{{email2}}",
+  "address" : "{{address2}}"
 }
+
 
 ###로그인 -> ok
 GET http://localhost:8080/api/users/login

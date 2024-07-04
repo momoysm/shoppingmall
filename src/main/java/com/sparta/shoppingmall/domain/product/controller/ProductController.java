@@ -1,20 +1,29 @@
 package com.sparta.shoppingmall.domain.product.controller;
 
+import static com.sparta.shoppingmall.common.util.ControllerUtil.getResponseEntity;
+
 import com.sparta.shoppingmall.common.base.dto.CommonResponse;
 import com.sparta.shoppingmall.common.security.UserDetailsImpl;
 import com.sparta.shoppingmall.domain.product.dto.ProductPageResponse;
 import com.sparta.shoppingmall.domain.product.dto.ProductRequest;
 import com.sparta.shoppingmall.domain.product.dto.ProductResponse;
+import com.sparta.shoppingmall.domain.product.dto.ProductSearchCond;
 import com.sparta.shoppingmall.domain.product.service.ProductService;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-
-import static com.sparta.shoppingmall.common.util.ControllerUtil.getResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
@@ -57,6 +66,18 @@ public class ProductController {
     ){
         ProductResponse response = productService.getProduct(productId);
         return getResponseEntity(response, "상품 조회 성공");
+    }
+
+    /**
+     * 팔로우한 유저의 상품 조회
+     */
+    @GetMapping("/following")
+    public ResponseEntity<CommonResponse<ProductPageResponse>> getProductsFollow(
+            @ModelAttribute ProductSearchCond searchCond,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ){
+        ProductPageResponse response = productService.getProductFollow(searchCond, userDetails.getUser());
+        return getResponseEntity(response, "팔로우한 유저의 상품 조회 성공");
     }
 
 

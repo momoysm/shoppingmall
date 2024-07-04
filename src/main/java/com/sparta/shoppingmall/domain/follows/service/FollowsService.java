@@ -1,19 +1,19 @@
 package com.sparta.shoppingmall.domain.follows.service;
 
 import com.sparta.shoppingmall.common.exception.customexception.FollowRejectedException;
-import com.sparta.shoppingmall.domain.follows.repository.FollowsRepository;
 import com.sparta.shoppingmall.domain.follows.dto.FollowsResponse;
+import com.sparta.shoppingmall.domain.follows.dto.FollowsTopTenResponse;
 import com.sparta.shoppingmall.domain.follows.entity.Follows;
+import com.sparta.shoppingmall.domain.follows.repository.FollowsRepository;
 import com.sparta.shoppingmall.domain.user.entity.User;
 import com.sparta.shoppingmall.domain.user.entity.UserStatus;
 import com.sparta.shoppingmall.domain.user.service.UserService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -51,7 +51,6 @@ public class FollowsService {
      */
     @Transactional
     public FollowsResponse followCancel(Long followingId, User follower) {
-        // 검증 -> 팔로우 검색 -> 팔로우 삭제
         if(followingId.equals(follower.getId())){
             throw new FollowRejectedException("자신을 팔로우 취소할 수 없습니다.");
         }
@@ -142,5 +141,12 @@ public class FollowsService {
         }
 
         return response;
+    }
+
+    /**
+     * 팔로워 TOP10 조회
+     */
+    public List<FollowsTopTenResponse> getFollowsTopTen() {
+        return followsRepository.getFollowsTopTen();
     }
 }

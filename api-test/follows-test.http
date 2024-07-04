@@ -1,5 +1,5 @@
 ### 사용자 follow
-POST http://localhost:8080/api/follows/1
+POST http://localhost:8080/api/follows/3
 Authorization: {{Authorization}}}
 Content-Type: application/json
 
@@ -31,4 +31,9 @@ Authorization: {{Authorization}}}
 
 ### 관리자 - 해당 사용자의 팔로워 목록 조회
 GET http://localhost:8080/api/follows/2/following
+Authorization: {{Authorization}}}
+
+
+### 팔로우 TOP10 조회
+GET http://localhost:8080/api/follows/top-ten
 Authorization: {{Authorization}}}

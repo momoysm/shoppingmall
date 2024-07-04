@@ -10,15 +10,14 @@ import com.sparta.shoppingmall.domain.product.entity.Product;
 import com.sparta.shoppingmall.domain.product.entity.QProduct;
 import com.sparta.shoppingmall.domain.user.dto.ProfileResponse;
 import com.sparta.shoppingmall.domain.user.entity.User;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Repository
 @RequiredArgsConstructor
@@ -26,6 +25,9 @@ public class LikesRepositoryCustomImpl implements LikesRepositoryCustom{
 
     private final JPAQueryFactory jpaQueryFactory;
 
+    /**
+     * 내가 좋아요한 상품 조회(페이징)
+     */
     @Override
     public Page<Product> productLiked(Long userId, Pageable pageable){
         QLikes likes = QLikes.likes;
@@ -48,6 +50,9 @@ public class LikesRepositoryCustomImpl implements LikesRepositoryCustom{
         return PageableExecutionUtils.getPage(productList, pageable, () -> total);
     }
 
+    /**
+     * 내가 좋아요한 댓글 조회 (페이징)
+     */
     @Override
     public Page<Comment> commentLiked(Long userId, Pageable pageable){
         QLikes likes = QLikes.likes;
@@ -70,6 +75,9 @@ public class LikesRepositoryCustomImpl implements LikesRepositoryCustom{
         return PageableExecutionUtils.getPage(commentList, pageable, () -> total);
     }
 
+    /**
+     * 사용자 프로필 조회(좋아요한 상품/댓글 수 포함)
+     */
     @Override
     public ProfileResponse getUserLikedProductComment(User loginUser) {
         QLikes likes = QLikes.likes;
@@ -77,7 +85,7 @@ public class LikesRepositoryCustomImpl implements LikesRepositoryCustom{
         List<Tuple> result = jpaQueryFactory
                 .select(
                         likes.contentType,
-                        likes.count()
+                        likes.count().coalesce(0L)
                 )
                 .from(likes)
                 .where(likes.user.id.eq(loginUser.getId()))

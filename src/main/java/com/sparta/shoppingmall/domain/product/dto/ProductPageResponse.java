@@ -1,11 +1,10 @@
 package com.sparta.shoppingmall.domain.product.dto;
 
 import com.sparta.shoppingmall.domain.product.entity.Product;
+import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.domain.Page;
-
-import java.util.List;
 
 @Getter
 @Builder
