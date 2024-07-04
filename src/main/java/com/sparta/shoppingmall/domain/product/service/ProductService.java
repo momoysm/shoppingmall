@@ -6,6 +6,7 @@ import com.sparta.shoppingmall.common.util.PageUtil;
 import com.sparta.shoppingmall.domain.product.dto.ProductPageResponse;
 import com.sparta.shoppingmall.domain.product.dto.ProductRequest;
 import com.sparta.shoppingmall.domain.product.dto.ProductResponse;
+import com.sparta.shoppingmall.domain.product.dto.ProductSearchCond;
 import com.sparta.shoppingmall.domain.product.entity.Product;
 import com.sparta.shoppingmall.domain.product.entity.ProductStatus;
 import com.sparta.shoppingmall.domain.product.repository.ProductRepository;
@@ -77,12 +78,12 @@ public class ProductService {
     /**
      * 팔로우한 유저의 상품 조회
      */
-    public ProductPageResponse getProductFollow(Integer pageNum, User user) {
-        Pageable pageable = PageRequest.of(pageNum - 1, PageUtil.PAGE_SIZE_FIVE, Sort.by("username").descending().and(Sort.by("username")));
-        Page<Product> products = productRepository.getProductsFollow(pageable, user);
-        String totalProduct = PageUtil.validateAndSummarizePage(pageNum, products);
+    public ProductPageResponse getProductFollow(ProductSearchCond searchCond, User user) {
+        Pageable pageable = PageRequest.of(searchCond.getPageNum()-1, searchCond.getPageSize(), Sort.by("createAt").descending());
+        Page<Product> products = productRepository.getProductsFollow(pageable, user, searchCond);
+        String totalProduct = PageUtil.validateAndSummarizePage(searchCond.getPageNum(), products);
 
-        return ProductPageResponse.of(pageNum, totalProduct, products);
+        return ProductPageResponse.of(searchCond.getPageNum(), totalProduct, products);
     }
 
     /**

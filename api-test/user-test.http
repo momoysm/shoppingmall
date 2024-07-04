@@ -63,8 +63,8 @@ GET http://localhost:8080/api/users/login
 Content-Type: application/json
 
 {
-  "username" : "gildong12",
-  "password" : "{{password2}}"
+  "username" : "{{username}}",
+  "password" : "{{password}}"
 }
 
 > {%
