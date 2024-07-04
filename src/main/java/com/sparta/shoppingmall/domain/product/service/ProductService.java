@@ -77,7 +77,7 @@ public class ProductService {
     /**
      * 팔로우한 유저의 상품 조회
      */
-    public ProductPageResponse getProductFollow(Integer pageNum, Boolean isDesc, User user) {
+    public ProductPageResponse getProductFollow(Integer pageNum, User user) {
         Pageable pageable = PageRequest.of(pageNum - 1, PageUtil.PAGE_SIZE_FIVE, Sort.by("username").descending().and(Sort.by("username")));
         Page<Product> products = productRepository.getProductsFollow(pageable, user);
         String totalProduct = PageUtil.validateAndSummarizePage(pageNum, products);

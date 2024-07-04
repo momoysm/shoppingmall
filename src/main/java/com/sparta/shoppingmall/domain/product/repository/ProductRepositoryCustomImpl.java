@@ -42,7 +42,7 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
                 .from(product)
                 .leftJoin(follows).on(product.user.id.eq(follows.following.id))
                 .where(follows.follower.id.eq(loginUser.getId()))
-                .fetchOne();
+                .fetch().get(0);
 
         return PageableExecutionUtils.getPage(productList, pageable, () -> total);
     }
