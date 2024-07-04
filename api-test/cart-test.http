@@ -4,7 +4,7 @@ Authorization: {{Authorization}}
 Content-Type: application/json
 
 {
-  "productId" : 4
+  "productId" : 1
 }
 
 ### 장바구니에 상품 리스트 조회 -> ok

@@ -12,16 +12,17 @@ import com.sparta.shoppingmall.domain.product.repository.ProductRepository;
 import com.sparta.shoppingmall.domain.user.entity.User;
 import com.sparta.shoppingmall.domain.user.entity.UserType;
 import com.sparta.shoppingmall.domain.user.service.UserService;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -77,7 +78,7 @@ public class ProductService {
      * 팔로우한 유저의 상품 조회
      */
     public ProductPageResponse getProductFollow(Integer pageNum, Boolean isDesc, User user) {
-        Pageable pageable = PageUtil.createPageable(pageNum, PageUtil.PAGE_SIZE_FIVE, isDesc);
+        Pageable pageable = PageRequest.of(pageNum - 1, PageUtil.PAGE_SIZE_FIVE, Sort.by("username").descending().and(Sort.by("username")));
         Page<Product> products = productRepository.getProductsFollow(pageable, user);
         String totalProduct = PageUtil.validateAndSummarizePage(pageNum, products);
 
@@ -91,8 +92,8 @@ public class ProductService {
     public ProductResponse updateProduct(Long productId, ProductRequest productRequest, User user) {
         Product product = findByProductId(productId);
 
-        if(user.getUserType() != UserType.ADMIN){//유저일때가 아니라 관리자가 아닐때 로 적는게 맞음.
-            if(!Objects.equals(user.getId(), product.getUser().getId())){
+        if (user.getUserType() != UserType.ADMIN) {//유저일때가 아니라 관리자가 아닐때 로 적는게 맞음.
+            if (!Objects.equals(user.getId(), product.getUser().getId())) {
                 throw new UserMismatchException("권한이 없는 사용자입니다");
             }
         }
@@ -110,8 +111,8 @@ public class ProductService {
     public Long deleteProduct(Long productId, User user) {
         Product product = findByProductId(productId);
 
-        if(user.getUserType() != UserType.ADMIN){//유저일때가 아니라 관리자가 아닐때 로 적는게 맞음.
-            if(!Objects.equals(user.getId(), product.getUser().getId())){
+        if (user.getUserType() != UserType.ADMIN) {//유저일때가 아니라 관리자가 아닐때 로 적는게 맞음.
+            if (!Objects.equals(user.getId(), product.getUser().getId())) {
                 throw new UserMismatchException("권한이 없는 사용자입니다");
             }
         }

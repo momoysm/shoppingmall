@@ -13,6 +13,8 @@ import com.sparta.shoppingmall.domain.cart.repository.CartRepository;
 import com.sparta.shoppingmall.domain.product.entity.Product;
 import com.sparta.shoppingmall.domain.product.service.ProductService;
 import com.sparta.shoppingmall.domain.user.entity.User;
+import com.sparta.shoppingmall.domain.user.service.UserService;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -20,13 +22,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class CartService {
 
+    private final UserService userService;
     private final ProductService productService;
     private final CartRepository cartRepository;
     private final CartProductRepository cartProductRepository;
@@ -36,12 +37,13 @@ public class CartService {
      */
     @Transactional
     public CartProductResponse addCartProduct(CartProductRequest request, User user) {
+        User loginUser = userService.findById(user.getId());
         Product product = productService.findByProductId(request.getProductId());
         //상품 상태 체크
         if(!product.checkProductStatus()){
             throw new CartRejectedException("판매 중인 상품이 아닙니다.");
         }
-        Cart cart = user.getCart();
+        Cart cart = loginUser.getCart();
 
         //장바구니 안에 상품 중복 확인
         cart.getCartProducts().forEach(cartProduct -> cartProduct.verifyCartProduct(product.getId()));
