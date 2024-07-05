@@ -6,21 +6,28 @@ import com.sparta.shoppingmall.common.exception.customexception.UserDuplicatedEx
 import com.sparta.shoppingmall.common.exception.customexception.UserMismatchException;
 import com.sparta.shoppingmall.common.jwt.RefreshTokenService;
 import com.sparta.shoppingmall.domain.like.repository.LikesRepository;
-import com.sparta.shoppingmall.domain.user.dto.*;
+import com.sparta.shoppingmall.domain.user.dto.AdminUpdateUserRequest;
+import com.sparta.shoppingmall.domain.user.dto.AdminUserResponse;
+import com.sparta.shoppingmall.domain.user.dto.EditPasswordRequest;
+import com.sparta.shoppingmall.domain.user.dto.ProfileRequest;
+import com.sparta.shoppingmall.domain.user.dto.ProfileResponse;
+import com.sparta.shoppingmall.domain.user.dto.SignupRequest;
+import com.sparta.shoppingmall.domain.user.dto.SignupResponse;
+import com.sparta.shoppingmall.domain.user.dto.UserResponse;
+import com.sparta.shoppingmall.domain.user.dto.WithdrawRequest;
 import com.sparta.shoppingmall.domain.user.entity.User;
 import com.sparta.shoppingmall.domain.user.entity.UserStatus;
 import com.sparta.shoppingmall.domain.user.entity.UserType;
 import com.sparta.shoppingmall.domain.user.repository.UserRepository;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -174,17 +181,6 @@ public class UserService {
         findUser.adminUpdateUser(request);
 
         return new AdminUserResponse(findUser);
-    }
-
-    // 회원정보 수정 - 관리자 변경 -> 회원 상태 변경, 회원 타입 변경 메서드 빼기
-
-    /**
-     * 회원 상태 확인
-     */
-    private void checkUserStatus(UserStatus userStatus) {
-        if (userStatus.equals(UserStatus.WITHDRAW)) {
-            throw new UserMismatchException("이미 탈퇴한 회원입니다.");
-        }
     }
 
     /**
